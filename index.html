@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-M">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Clone</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                },
+            },
+            plugins: [
+                require('@tailwindcss/line-clamp'),
+            ],
+        }
+    </script>
+    <!-- Custom Styles -->
+    <style>
+        /* Custom scrollbar for WebKit browsers (Chrome, Safari) */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18181b; /* zinc-900 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #52525b; /* zinc-600 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #71717a; /* zinc-500 */
+        }
+        /* Hide scrollbar for Firefox */
+        .no-scrollbar {
+            scrollbar-width: none; /* Firefox */
+        }
+        /* Hide scrollbar for IE, Edge */
+        .no-scrollbar {
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-white font-sans">
+
+    <div id="app" class="flex flex-col h-screen">
+
+        <!-- ===== Header / Navbar ===== -->
+        <header class="sticky top-0 z-50 flex items-center justify-between px-4 py-2 bg-zinc-900 border-b border-zinc-800">
+            <!-- Left Section -->
+            <div class="flex items-center space-x-4">
+                <button id="menu-toggle" class="p-2 rounded-full hover:bg-zinc-800 focus:outline-none">
+                    <!-- Hamburger Menu Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+                </button>
+                <a href="#" class="flex items-center space-x-1">
+                    <!-- YouTube Logo SVG -->
+                    <svg class="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M23.49 6.2c-.28-.9-.9-1.5-1.78-1.78C19.9 4 12 4 12 4s-7.9 0-9.7.42c-.9.28-1.5.9-1.78 1.78C0 8.1 0 12 0 12s0 3.9.42 5.7c.28.9.9 1.5 1.78 1.78C4.1 20 12 20 12 20s7.9 0 9.7-.42c.9-.28 1.5-.9 1.78-1.78C24 15.9 24 12 24 12s0-3.9-.51-5.8zM9.5 15.5V8.5l6.5 3.5-6.5 3.5z"/>
+                    </svg>
+                    <span class="text-xl font-bold tracking-tighter">YouTube</span>
+                </a>
+            </div>
+
+            <!-- Center Section (Search) -->
+            <div class="hidden md:flex items-center justify-center flex-1 max-w-2xl">
+                <input
+                    type="text"
+                    placeholder="Search"
+                    class="w-full px-4 py-2 bg-zinc-800 border border-zinc-700 rounded-l-full focus:outline-none focus:border-blue-500"
+                >
+                <button class="px-5 py-2 bg-zinc-700 border border-zinc-700 rounded-r-full hover:bg-zinc-600">
+                    <!-- Search Icon -->
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+                <button class="ml-4 p-2.5 rounded-full bg-zinc-800 hover:bg-zinc-700">
+                    <!-- Microphone Icon -->
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M12 3a3 3 0 00-3 3v6a3 3 0 006 0V6a3 3 0 00-3-3zM11 14.092V17h2v-2.908a5 5 0 004-4.075V6h-2v4.017a3 3 0 01-6 0V6H7v4.017a5 5 0 004 4.075zM19 10v2a7 7 0 01-14 0v-2H3v2a9 9 0 008 8.941V23h2v-2.059A9 9 0 0021 12v-2h-2z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Right Section -->
+            <div class="flex items-center space-x-3">
+                <button class="p-2 rounded-full hover:bg-zinc-800 md:hidden">
+                    <!-- Search Icon (Mobile) -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 10a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </button>
+                <button class="p-2 rounded-full hover:bg-zinc-800">
+                    <!-- Create Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M4 8h11a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V9a1 1 0 011-1z"></path></svg>
+                </button>
+                <button class="p-2 rounded-full hover:bg-zinc-800">
+                    <!-- Notifications Icon -->
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341A6.002 6.002 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                </button>
+                <img
+                    src="https://placehold.co/32x32/6366f1/ffffff?text=U"
+                    alt="User Avatar"
+                    class="w-8 h-8 rounded-full cursor-pointer"
+                >
+            </div>
+        </header>
+
+        <!-- Menu Backdrop Overlay -->
+        <div id="menu-backdrop" class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden"></div>
+
+        <!-- ===== Main Body ===== -->
+        <div class="flex flex-1 overflow-hidden">
+
+            <!-- ===== Sidebar (Full) ===== -->
+            <!-- Updated classes for mobile overlay behavior -->
+            <aside id="sidebar" class="absolute lg:relative z-40 w-64 lg:w-60 flex-shrink-0 bg-zinc-900 overflow-y-auto no-scrollbar h-full hidden lg:flex">
+                <!-- Sidebar content remains the same... -->
+                <nav class="flex flex-col p-3 space-y-1">
+                    <a href="#" class="flex items-center space-x-4 px-3 py-2.5 rounded-lg bg-zinc-800">
+                        <!-- Home Icon -->
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"></path></svg>
+                        <span class="font-medium">Home</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-zinc-800">
+                        <!-- Shorts Icon -->
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.89 3.4L11.41 2 4 9.41V17h7.59L19 9.41 17.59 8l-4.18 4.18L12.89 3.4zM10 15H6v-4.59l4-4 4 4V15h-4zM20 12l-1.41-1.41L13 16.17V22h2v-4.17l3.59-3.59L20 12z"></path></svg>
+                        <span class="font-medium">Shorts</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-zinc-800">
+                        <!-- Subscriptions Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2zM9 12l6-3v6l-6-3z"></path></svg>
+                        <span class="font-medium">Subscriptions</span>
+                    </a>
+                </nav>
+
+                <hr class="border-zinc-700 my-3">
+
+                <nav class="flex flex-col p-3 space-y-1">
+                    <a href="#" class="flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-zinc-800">
+                        <!-- Library Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        <span class="font-medium">Library</span>
+                    </a>
+                    <a href="#" class="flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-zinc-800">
+                        <!-- History Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <span class="font-medium">History</span>
+                    </a>
+                </nav>
+
+                <hr class="border-zinc-700 my-3">
+
+                <div class="p-3">
+                    <span class="px-3 text-sm font-medium text-zinc-400">Subscriptions</span>
+                    <nav class="flex flex-col mt-2 space-y-1">
+                        <!-- Mock Subscriptions -->
+                        <a href="#" class="flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-zinc-800">
+                            <img src="https://placehold.co/24x24/c026d3/ffffff?text=C" alt="Channel" class="w-6 h-6 rounded-full">
+                            <span class="font-medium truncate">CodeStak</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-zinc-800">
+                            <img src="https://placehold.co/24x24/db2777/ffffff?text=G" alt="Channel" class="w-6 h-6 rounded-full">
+                            <span class="font-medium truncate">GamingHub</span>
+                        </a>
+                        <a href="#" class="flex items-center space-x-4 px-3 py-2.5 rounded-lg hover:bg-zinc-800">
+                            <img src="https://placehold.co/24x24/0284c7/ffffff?text=M" alt="Channel" class="w-6 h-6 rounded-full">
+                            <span class="font-medium truncate">MusicLovers</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <hr class="border-zinc-700 my-3">
+
+                <!-- Footer Links -->
+                <footer class="p-4 text-xs text-zinc-500 space-x-2">
+                    <a href="#" class="hover:text-zinc-300">About</a>
+                    <a href="#" class="hover:text-zinc-300">Press</a>
+                    <a href="#" class="hover:text-zinc-300">Copyright</a>
+                    <a href="#" class="hover:text-zinc-300">Contact us</a>
+                </footer>
+            </aside>
+
+            <!-- ===== Mini-Sidebar (Hidden by default) ===== -->
+            <aside id="mini-sidebar" class="w-20 hidden flex-shrink-0 bg-zinc-900 overflow-y-auto no-scrollbar">
+                <!-- Mini-sidebar content remains the same... -->
+                <nav class="flex flex-col items-center p-2 space-y-2 mt-1">
+                    <a href="#" class="flex flex-col items-center justify-center w-full px-1 py-3.5 rounded-lg bg-zinc-800">
+                        <!-- Home Icon -->
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"></path></svg>
+                        <span class="text-xs mt-1.5">Home</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center w-full px-1 py-3.5 rounded-lg hover:bg-zinc-800">
+                        <!-- Shorts Icon -->
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12.89 3.4L11.41 2 4 9.41V17h7.59L19 9.41 17.59 8l-4.18 4.18L12.89 3.4zM10 15H6v-4.59l4-4 4 4V15h-4zM20 12l-1.41-1.41L13 16.17V22h2v-4.17l3.59-3.59L20 12z"></path></svg>
+                        <span class="text-xs mt-1.5">Shorts</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center w-full px-1 py-3.5 rounded-lg hover:bg-zinc-800">
+                        <!-- Subscriptions Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v12a2 2 0 01-2 2zM9 12l6-3v6l-6-3z"></path></svg>
+                        <span class="text-xs mt-1.5">Subscriptions</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center justify-center w-full px-1 py-3.5 rounded-lg hover:bg-zinc-800">
+                        <!-- Library Icon -->
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                        <span class="text-xs mt-1.5">Library</span>
+                    </a>
+                </nav>
+            </aside>
+
+            <!-- ===== Main Content ===== -->
+            <main id="main-content" class="flex-1 overflow-y-auto">
+                <!-- Topic Tags Bar -->
+                <div class="sticky top-0 bg-zinc-950/80 backdrop-blur-md px-6 py-3 border-b border-zinc-800">
+                    <!-- Topic tags content remains the same... -->
+                    <div class="flex space-x-3 overflow-x-auto no-scrollbar">
+                        <button class="px-3.5 py-1.5 bg-white text-black rounded-lg text-sm font-medium whitespace-nowrap">All</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">Music</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">Gaming</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">Live</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">Trailers</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">Debates</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">Podcasts</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">Cooking</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">News</button>
+                        <button class="px-3.5 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium whitespace-nowrap">Recently uploaded</button>
+                    </div>
+                </div>
+
+                <!-- Video Grid -->
+                <div id="video-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-5 gap-y-8 p-6">
+                    <!-- Video cards will be injected here by JavaScript -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // --- Mock Video Data ---
+        const mockVideos = [
+            {
+                thumbnail: "https://placehold.co/600x400/1e293b/ffffff?text=Tech+Review",
+                duration: "14:30",
+                avatar: "https://placehold.co/40x40/3b82f6/ffffff?text=T",
+                title: "The New M4 Laptop is Finally Here! | Unboxing & Review",
+                channel: "Shayan Raza",
+                views: "123M views",
+                time: "3 days ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/ca8a04/ffffff?text=Cooking",
+                duration: "8:15",
+                avatar: "https://placehold.co/40x40/ca8a04/ffffff?text=C",
+                title: "Ultimate 30-Minute Weeknight Pasta Recipe",
+                channel: "Shayan Raza",
+                views: "320K views",
+                time: "1 day ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/65a30d/ffffff?text=Travel",
+                duration: "22:05",
+                avatar: "https://placehold.co/40x40/65a30d/ffffff?text=V",
+                title: "Backpacking Through Southeast Asia - Episode 1: Hanoi",
+                channel: "Shayan Raza",
+                views: "89K views",
+                time: "5 hours ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/9333ea/ffffff?text=Gaming",
+                duration: "45:12",
+                avatar: "https://placehold.co/40x40/9333ea/ffffff?text=G",
+                title: "CyberCity 2088 - Full Gameplay Walkthrough (No Commentary)",
+                channel: "Shayan Raza",
+                views: "1.8M views",
+                time: "1 week ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/c2410c/ffffff?text=Science",
+                duration: "12:39",
+                avatar: "https://placehold.co/40x40/c2410c/ffffff?text=S",
+                title: "What If You Fell Into a Black Hole?",
+                channel: "Shayan Raza",
+                views: "4.5M views",
+                time: "2 weeks ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/db2777/ffffff?text=Music",
+                duration: "3:45",
+                avatar: "https://placehold.co/40x40/db2777/ffffff?text=M",
+                title: "Aura - 'Electric Dreams' (Official Music Video)",
+                channel: "Shayan Raza",
+                views: "12M views",
+                time: "1 month ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/0284c7/ffffff?text=DIY",
+                duration: "18:20",
+                avatar: "https://placehold.co/40x40/0284c7/ffffff?text=D",
+                title: "Building a Rustic Bookshelf From Reclaimed Wood",
+                channel: "Shayan Raza",
+                views: "650K views",
+                time: "6 days ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/059669/ffffff?text=Finance",
+                duration: "9:55",
+                avatar: "https://placehold.co/40x40/059669/ffffff?text=F",
+                title: "How to Start Investing: A Beginner's Guide",
+                channel: "Shayan Raza",
+                views: "730K views",
+                time: "4 days ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/be185d/ffffff?text=History",
+                duration: "28:40",
+                avatar: "https://placehold.co/40x40/be185d/ffffff?text=H",
+                title: "The Rise and Fall of the Roman Republic: A Deep Dive",
+                channel: "Shayan Raza",
+                views: "980K views",
+                time: "3 weeks ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/1d4ed8/ffffff?text=Podcast",
+                duration: "1:15:30",
+                avatar: "https://placehold.co/40x40/1d4ed8/ffffff?text=P",
+                title: "The Future of AI with Dr. Evelyn Reed | Podcast #177",
+                channel: "Shayan Raza",
+                views: "30K views",
+                time: "2 days ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/c026d3/ffffff?text=Animation",
+                duration: "5:10",
+                avatar: "https://placehold.co/40x40/c026d3/ffffff?text=A",
+                title: "My First 2D Animation - 'The Bouncing Ball'",
+                channel: "Shayan Raza",
+                views: "15K views",
+                time: "2 hours ago"
+            },
+            {
+                thumbnail: "https://placehold.co/600x400/e11d48/ffffff?text=Sports",
+                duration: "7:02",
+                avatar: "https://placehold.co/40x40/e11d48/ffffff?text=S",
+                title: "Top 10 Craziest Dunks of the Season",
+                channel: "Shayan Raza",
+                views: "3.1M views",
+                time: "5 days ago"
+            }
+        ];
+
+        // --- Sidebar Toggle Logic ---
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const miniSidebar = document.getElementById('mini-sidebar');
+        const mainContent = document.getElementById('main-content');
+        const menuBackdrop = document.getElementById('menu-backdrop'); // Backdrop for mobile overlay
+
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (window.innerWidth < 1024) { // 'lg' breakpoint in Tailwind
+                // Mobile toggle logic: Show/hide full sidebar as overlay
+                sidebar.classList.toggle('hidden');
+                menuBackdrop.classList.toggle('hidden');
+            } else {
+                // Desktop toggle logic: Swap full and mini sidebars
+                sidebar.classList.toggle('hidden');
+                miniSidebar.classList.toggle('hidden');
+            }
+        });
+
+        // Click backdrop to close mobile menu
+        menuBackdrop.addEventListener('click', () => {
+            sidebar.classList.add('hidden');
+            menuBackdrop.classList.add('hidden');
+        });
+
+        // Function to set the correct sidebar state based on window size
+        function setSidebarState() {
+            if (window.innerWidth >= 1024) {
+                // DESKTOP: Default state is full sidebar visible, mini and backdrop hidden
+                sidebar.classList.remove('hidden');
+                miniSidebar.classList.add('hidden');
+                menuBackdrop.classList.add('hidden');
+            } else {
+                // MOBILE: Default state is both sidebars and backdrop hidden
+                sidebar.classList.add('hidden');
+                miniSidebar.classList.add('hidden');
+                menuBackdrop.classList.add('hidden');
+            }
+        }
+
+        // Handle resizing to ensure correct layout states
+        window.addEventListener('resize', setSidebarState);
+
+
+        // --- Video Grid Rendering ---
+        const videoGrid = document.getElementById('video-grid');
+
+        function renderVideos() {
+            videoGrid.innerHTML = mockVideos.map(video => `
+                <div class="flex flex-col cursor-pointer group">
+                    <!-- Thumbnail -->
+                    <div class="relative">
+                        <img
+                            src="${video.thumbnail}"
+                            alt="Video thumbnail"
+                            class="w-full rounded-xl object-cover transition-all duration-300 group-hover:rounded-none"
+                            onerror="this.src='https://placehold.co/600x400/ef4444/ffffff?text=Error'"
+                        >
+                        <span class="absolute bottom-1.5 right-1.5 bg-black bg-opacity-80 text-white text-xs px-1.5 py-0.5 rounded-md">
+                            ${video.duration}
+                        </span>
+                    </div>
+                    <!-- Video Details -->
+                    <div class="flex mt-3 space-x-3">
+                        <img
+                            src="${video.avatar}"
+                            alt="Channel avatar"
+                            class="w-9 h-9 rounded-full flex-shrink-0"
+                            onerror="this.src='https://placehold.co/40x40/ef4444/ffffff?text=E'"
+                        >
+                        <div class="flex flex-col overflow-hidden">
+                            <h3 class="text-base font-medium text-neutral-100 line-clamp-2">
+                                ${video.title}
+                            </h3>
+                            <span class="text-sm text-zinc-400 mt-1 hover:text-white">
+                                ${video.channel}
+                            </span>
+                            <span class="text-sm text-zinc-400">
+                                ${video.views} &bull; ${video.time}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Initial render
+        document.addEventListener('DOMContentLoaded', () => {
+            renderVideos();
+            setSidebarState(); // Set the initial sidebar state on load
+        });
+
+    </script>
+</body>
+</html>
+
